@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    >
+    <RelativeLayout
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <TextView
+            android:id="@+id/filenameview"
+            android:layout_marginLeft="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="File Name"/>
+
+        <EditText
+            android:id="@+id/filenameinput"
+            android:layout_below="@id/filenameview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Eg: CSE-F"/>
+
+        <TextView
+            android:id="@+id/degreeview"
+            android:layout_marginLeft="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/filenameinput"
+            android:text="First Half"
+            />
+
+        <EditText
+            android:id="@+id/degreeinput"
+            android:layout_below="@id/degreeview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Eg: CB.EN.U4CSE"/>
+
+
+        <TextView
+            android:layout_below="@id/degreeinput"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/startrolldisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Starting Roll Number "/>
+        <EditText
+            android:id="@+id/startrollinput"
+            android:inputType="number"
+            android:layout_below="@id/startrolldisplay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Eg: 17601"/>
+        <TextView
+            android:id="@+id/endrolldisplay"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/startrollinput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ending Roll Number "/>
+        <EditText
+            android:id="@+id/endrollinput"
+            android:layout_width="match_parent"
+            android:layout_below="@id/endrolldisplay"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="Eg: 17668"/>
+
+        <Button
+            android:id="@+id/add"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:text="ADD"
+
+            android:layout_below="@id/endrollinput"/>
+
+        <Button
+            android:id="@+id/resetfilename"
+            android:layout_width="match_parent"
+            android:background="@color/colorAccent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/add"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="10dp"
+            android:text="RESET"/>
+
+
+
+    </RelativeLayout>
+</ScrollView>
