@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -61,7 +62,7 @@ public class AddClassActivity extends AppCompatActivity {
                 hideKeyboard();
                 if(start.getText().toString().isEmpty() || end.getText().toString().isEmpty() || fileName.getText().toString().isEmpty())
                 {
-                    Toast.makeText(AddClassActivity.this,"Please fill in all the spaces ! ",Toast.LENGTH_SHORT).show();
+                    showSnackbar("Please fill in all the spaces ! ");
                 }
                 else{
                 long startroll = Integer.parseInt(start.getText().toString());
@@ -75,7 +76,7 @@ public class AddClassActivity extends AppCompatActivity {
                                 Environment.getExternalStorageDirectory() + "/"
                                         + "AmritaAttendance");
                     } else
-                        Toast.makeText(AddClassActivity.this, "Oops!! There is no SD Card.", Toast.LENGTH_SHORT).show();
+                        showSnackbar("Oops!! There is no SD Card.");
 
                     //If File is not present create directory
                     if (!apkStorage.exists()) {
@@ -84,7 +85,7 @@ public class AddClassActivity extends AppCompatActivity {
                     }
 
                     File file = new File(Environment.getExternalStorageDirectory() + "/"
-                            + "AmritaAttendance/" + fileName.getText().toString() + ".xlsx");
+                            + "AmritaAttendance/" + fileName.getText().toString() + ".xls");
 
                     WritableWorkbook myFirstWbook = null;
 
@@ -97,20 +98,15 @@ public class AddClassActivity extends AppCompatActivity {
                         WritableSheet excelSheet = myFirstWbook.createSheet("Sheet 1", 0);
                         Label label = new Label(0, 0, "Roll Numbers");
                         excelSheet.addCell(label);
-                        if(excelSheet.getCell(1,0).getContents().isEmpty())
-                            Toast.makeText(AddClassActivity.this,"0,0 Empty",Toast.LENGTH_SHORT).show();
                         int j = 1;
-
                         for (long i = startroll; i <= endroll; ++i, ++j) {
 
                             String roll = firsthalf.getText().toString()+ String.valueOf(i);
                             excelSheet.addCell(new Label(0, j, roll));
 
                         }
-
                         myFirstWbook.write();
-
-                        Toast.makeText(AddClassActivity.this,"File created : "+fileName.getText().toString()+".xls",Toast.LENGTH_SHORT).show();
+                        showSnackbar("File created : "+fileName.getText().toString()+".xls");
                         Log.e("Written xls ", "Successs");
 
 
@@ -133,8 +129,7 @@ public class AddClassActivity extends AppCompatActivity {
 
                     }
                 } else {
-
-            Toast.makeText(AddClassActivity.this,"Roll Numbers not valid ! ",Toast.LENGTH_SHORT).show();
+                    showSnackbar("Roll Numbers not valid ! ");
                 }
             }}
         });
@@ -159,28 +154,20 @@ public class AddClassActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 1: {
-
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    Toast.makeText(AddClassActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                if (!(grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    showSnackbar("Permission denied to read your External Storage");
                 }
-                return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
     void hideKeyboard() {
@@ -189,6 +176,13 @@ public class AddClassActivity extends AppCompatActivity {
 
         inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                 InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    void showSnackbar(String msg){
+        View parentLayout = findViewById(android.R.id.content);
+        Snackbar snackbar = Snackbar
+                .make(parentLayout, msg, Snackbar.LENGTH_SHORT);
+        snackbar.show();
     }
 
 }

@@ -5,12 +5,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +34,8 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.krca.attendance.BuildConfig.APPLICATION_ID;
 
 public class LaunchingActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -93,6 +97,7 @@ public class LaunchingActivity extends AppCompatActivity
                 final File pdfFile = new File(Environment.getExternalStorageDirectory() + "/AmritaAttendance/" + files[i].getName());
                 if (pdfFile.exists()) {
                     final ArrayList<String> qPaperOptions = new ArrayList<>();
+                    qPaperOptions.add("Open as spreadsheet");
                     qPaperOptions.add("Rename");
                     qPaperOptions.add("Delete");
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(LaunchingActivity.this); //Read Update
@@ -100,7 +105,7 @@ public class LaunchingActivity extends AppCompatActivity
                     alertDialog.setAdapter(optionsAdapter, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int pos) {
-                            if(pos==1)
+                            if(pos==2)
                             {
                                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(LaunchingActivity.this);
                                 alertDialog.setMessage("Are you sure you want to delete the file? ");
@@ -122,7 +127,7 @@ public class LaunchingActivity extends AppCompatActivity
                                 });
                                 alertDialog.show();
                             }
-                            else if(pos==0){
+                            else if(pos==1){
                                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(LaunchingActivity.this);
                                 alertDialog.setMessage("Rename file");
                                 LinearLayout layout = new LinearLayout(LaunchingActivity.this);
@@ -149,6 +154,15 @@ public class LaunchingActivity extends AppCompatActivity
                                     }
                                 });
                                 alertDialog.show();
+                            }
+                            else if(pos==0)
+                            {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                Uri data = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", pdfFile);
+                                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                intent.setDataAndType(data, "application/vnd.ms-excel");
+                                if (intent.resolveActivity(getPackageManager()) != null)
+                                    startActivity(Intent.createChooser(intent, "Open the file"));
                             }
 
                         }

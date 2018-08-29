@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <ScrollView
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    >
+    android:layout_width="match_parent">
     <RelativeLayout
         android:layout_margin="20dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
 
         <TextView
             android:id="@+id/filenameview"
@@ -30,6 +27,7 @@
         <TextView
             android:id="@+id/degreeview"
             android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/filenameinput"
@@ -47,6 +45,7 @@
         <TextView
             android:layout_below="@id/degreeinput"
             android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
             android:id="@+id/startrolldisplay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,6 +59,7 @@
             android:hint="Eg: 17601"/>
         <TextView
             android:id="@+id/endrolldisplay"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="5dp"
             android:layout_below="@id/startrollinput"
             android:layout_width="wrap_content"
@@ -75,9 +75,10 @@
 
         <Button
             android:id="@+id/add"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
             android:background="@color/colorAccent"
             android:text="ADD"
 
@@ -85,6 +86,7 @@
 
         <Button
             android:id="@+id/resetfilename"
+            android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:background="@color/colorAccent"
             android:layout_height="wrap_content"

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 public class StudentAdapter extends ArrayAdapter<Student> {
 
     private Context mContext;
+
+    ArrayList<String> absentees = new ArrayList<String>();
     public StudentAdapter(Activity context, ArrayList<Student> students) {
         // Here, we initialize the ArrayAdapter's internal storage for the context and the list.
         // the second argument is used when the ArrayAdapter is populating a single TextView.
@@ -30,7 +33,7 @@ public class StudentAdapter extends ArrayAdapter<Student> {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View listItemView = convertView;
         if(listItemView == null) {
             listItemView = LayoutInflater.from(getContext()).inflate(
@@ -42,8 +45,20 @@ public class StudentAdapter extends ArrayAdapter<Student> {
         StudentID.setText(currentStudent.getMstudentId());
 
         final CheckBox studentPresence = (CheckBox) listItemView.findViewById(R.id.attendanceCheckbox);
-        studentPresence.setChecked(currentStudent.getmPresence());
+        studentPresence.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(!studentPresence.isChecked())
+                {
+                    absentees.add(String.valueOf(position));
+                }
+                else {
+                    absentees.remove(String.valueOf(position));
+                }
 
+            }
+        });
+        studentPresence.setChecked(true);
         listItemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,5 +69,9 @@ public class StudentAdapter extends ArrayAdapter<Student> {
             }
         });
         return listItemView;
+    }
+
+    public ArrayList<String> getAbsentees(){
+        return absentees;
     }
 }

@@ -2,6 +2,7 @@ package com.krca.attendance;
 
 import android.content.Intent;
 import android.os.Environment;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,10 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import jxl.Workbook;
 import jxl.write.Label;
@@ -34,10 +39,32 @@ public class DateChooserActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent=new Intent(DateChooserActivity.this,TakeAttendance.class);
                 intent.putExtra("filename",filename);
-                intent.putExtra("date",datePicker.getDayOfMonth()+"/"+(datePicker.getMonth()+1)+"/"+datePicker.getYear());
+                intent.putExtra("date",datePicker.getDayOfMonth()+"-"+(datePicker.getMonth()+1)+"-"+datePicker.getYear());
                 startActivity(intent);
             }
         });
 
+        Button currentDate=findViewById(R.id.setcurrentdate);
+        currentDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Date c = Calendar.getInstance().getTime();
+                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                String formattedDate = df.format(c);
+                Log.e("Today's date : ",formattedDate);
+                Intent intent=new Intent(DateChooserActivity.this,TakeAttendance.class);
+                intent.putExtra("filename",filename);
+                intent.putExtra("date",formattedDate);
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    void showSnackbar(String msg){
+        View parentLayout = findViewById(android.R.id.content);
+        Snackbar snackbar = Snackbar
+                .make(parentLayout, msg, Snackbar.LENGTH_SHORT);
+        snackbar.show();
     }
 }
