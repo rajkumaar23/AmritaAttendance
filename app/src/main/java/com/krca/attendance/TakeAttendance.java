@@ -110,9 +110,11 @@ public class TakeAttendance extends AppCompatActivity {
                             for(int j=1;j<count;++j) {
                                 if(!abs.contains(String.valueOf(j-1)))
                                 {
+                                    sheet1.addCell(new Label(currentFreePos,j,""));
                                     sheet1.addCell(new Label(currentFreePos,j,"Present"));
                                 }
                                 else{
+                                    sheet1.addCell(new Label(currentFreePos,j,""));
                                     sheet1.addCell(new Label(currentFreePos,j,"ABSENT"));
                                 }
 

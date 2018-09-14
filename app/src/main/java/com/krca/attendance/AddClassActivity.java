@@ -60,11 +60,14 @@ public class AddClassActivity extends AppCompatActivity {
 
                 checkForPermission();
                 hideKeyboard();
-                if(start.getText().toString().isEmpty() || end.getText().toString().isEmpty() || fileName.getText().toString().isEmpty())
-                {
-                    showSnackbar("Please fill in all the spaces ! ");
+                if(start.getText().toString().trim().equals("")){
+                    start.setError("Required");
+                }if(end.getText().toString().trim().equals("")){
+                    end.setError("Required");
+                }if(fileName.getText().toString().trim().equals("")){
+                    fileName.setError("Required");
                 }
-                else{
+                else {
                 long startroll = Integer.parseInt(start.getText().toString());
                 long endroll = Integer.parseInt(end.getText().toString());
                 if (startroll < endroll) {
@@ -77,7 +80,6 @@ public class AddClassActivity extends AppCompatActivity {
                                         + "AmritaAttendance");
                     } else
                         showSnackbar("Oops!! There is no SD Card.");
-
                     //If File is not present create directory
                     if (!apkStorage.exists()) {
                         apkStorage.mkdir();
@@ -90,20 +92,15 @@ public class AddClassActivity extends AppCompatActivity {
                     WritableWorkbook myFirstWbook = null;
 
                     try {
-
-
                         myFirstWbook = Workbook.createWorkbook(file);
-
                         // create an Excel sheet
                         WritableSheet excelSheet = myFirstWbook.createSheet("Sheet 1", 0);
                         Label label = new Label(0, 0, "Roll Numbers");
                         excelSheet.addCell(label);
                         int j = 1;
                         for (long i = startroll; i <= endroll; ++i, ++j) {
-
                             String roll = firsthalf.getText().toString()+ String.valueOf(i);
                             excelSheet.addCell(new Label(0, j, roll));
-
                         }
                         myFirstWbook.write();
                         showSnackbar("File created : "+fileName.getText().toString()+".xls");
@@ -173,8 +170,8 @@ public class AddClassActivity extends AppCompatActivity {
     void hideKeyboard() {
         InputMethodManager inputManager = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+        if(inputManager.isAcceptingText())
+            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                 InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
