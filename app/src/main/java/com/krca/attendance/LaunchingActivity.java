@@ -29,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -83,6 +84,8 @@ public class LaunchingActivity extends AppCompatActivity
 
         ArrayAdapter<String> classlist=new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,filenames);
         listView.setAdapter(classlist);
+        TextView empty=findViewById(R.id.emptyview);
+        listView.setEmptyView(empty);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

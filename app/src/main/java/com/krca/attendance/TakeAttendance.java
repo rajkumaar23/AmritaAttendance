@@ -1,7 +1,13 @@
 package com.krca.attendance;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -67,14 +73,47 @@ public class TakeAttendance extends AppCompatActivity {
             e.printStackTrace();
         } finally {
 
-            studentsAdapter=new StudentAdapter(this,students);
+            studentsAdapter = new StudentAdapter(this, students);
             studentsList.setAdapter(studentsAdapter);
-            if (workbook != null) {
-                workbook.close();
-            }
 
         }
 
+
+        for(int k=0;k<currentFreePos;++k)
+        {
+            if(sheet.getCell(k,0).getContents().equals(date))
+            {
+                final AlertDialog.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(TakeAttendance.this, android.R.style.Theme_Material_Dialog_Alert);
+                } else {
+                    builder = new AlertDialog.Builder(TakeAttendance.this);
+                }
+                builder.setMessage("Attendance is already entried for this date. Please open it as spreadsheet for further editing.")
+                        .setPositiveButton("Open", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                Uri data = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", file);
+                                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                intent.setDataAndType(data, "application/vnd.ms-excel");
+                                if (intent.resolveActivity(getPackageManager()) != null) {
+                                    startActivity(Intent.createChooser(intent, "Open the file"));
+                                    TakeAttendance.this.finish();
+                                }
+                                else
+                                    showSnackbar("No app found for opening spreadsheets.");
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                TakeAttendance.this.finish();
+                            }
+                        })
+                        .show();
+
+                break;
+            }
+        }
 
 
 
@@ -95,27 +134,19 @@ public class TakeAttendance extends AppCompatActivity {
                             sheet = workbook.getSheet(0);
                             sheet1=copy.getSheet(0);
                             currentFreePos=sheet.getColumns();
-                            for(int k=0;k<currentFreePos;++k)
-                            {
-                                if(sheet.getCell(k,0).getContents().equals(date))
-                                {
-                                    currentFreePos=k;
-                                    flag=0;
-                                    break;
-                                }
-                            }
+
                             if(flag>0){
                             sheet1.addCell(new Label(currentFreePos,0,date));
 
                             for(int j=1;j<count;++j) {
-                                if(!abs.contains(String.valueOf(j-1)))
-                                {
-                                    sheet1.addCell(new Label(currentFreePos,j,""));
-                                    sheet1.addCell(new Label(currentFreePos,j,"Present"));
-                                }
-                                else{
-                                    sheet1.addCell(new Label(currentFreePos,j,""));
-                                    sheet1.addCell(new Label(currentFreePos,j,"ABSENT"));
+                                if(!sheet.getCell(0,j).getContents().trim().isEmpty()) {
+                                    if (!abs.contains(String.valueOf(j - 1))) {
+                                        sheet1.addCell(new Label(currentFreePos, j, ""));
+                                        sheet1.addCell(new Label(currentFreePos, j, "Present"));
+                                    } else {
+                                        sheet1.addCell(new Label(currentFreePos, j, ""));
+                                        sheet1.addCell(new Label(currentFreePos, j, "ABSENT"));
+                                    }
                                 }
 
                             }}
@@ -125,7 +156,7 @@ public class TakeAttendance extends AppCompatActivity {
                             e.printStackTrace();
                         } catch (BiffException e) {
                             e.printStackTrace();
-                        }catch (WriteException e) {
+                        } catch (WriteException e) {
                             e.printStackTrace();
                         } finally {
                             if (workbook != null) {

@@ -2,6 +2,7 @@ package com.krca.attendance;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.design.widget.Snackbar;
@@ -87,7 +88,7 @@ public class AddClassActivity extends AppCompatActivity {
                     }
 
                     File file = new File(Environment.getExternalStorageDirectory() + "/"
-                            + "AmritaAttendance/" + fileName.getText().toString() + ".xls");
+                            + "AmritaAttendance/" + fileName.getText().toString() + ".xlsx");
 
                     WritableWorkbook myFirstWbook = null;
 
@@ -103,8 +104,9 @@ public class AddClassActivity extends AppCompatActivity {
                             excelSheet.addCell(new Label(0, j, roll));
                         }
                         myFirstWbook.write();
-                        showSnackbar("File created : "+fileName.getText().toString()+".xls");
+                        showSnackbar("File created : "+fileName.getText().toString()+".xlsx");
                         Log.e("Written xls ", "Successs");
+                       startActivity(new Intent(AddClassActivity.this,LaunchingActivity.class));
 
 
                     } catch (IOException e) {
