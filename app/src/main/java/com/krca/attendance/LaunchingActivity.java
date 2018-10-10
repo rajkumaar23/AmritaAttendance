@@ -220,6 +220,11 @@ public class LaunchingActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
             // Handle the camera action
         }
+        if (id == R.id.nav_about) {
+            // Handle the camera action
+            Intent i=new Intent(LaunchingActivity.this,about.class);
+            startActivity(i);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
