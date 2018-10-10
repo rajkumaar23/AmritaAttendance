@@ -61,12 +61,14 @@ public class AddClassActivity extends AppCompatActivity {
 
                 checkForPermission();
                 hideKeyboard();
-                if(start.getText().toString().trim().equals("")){
-                    start.setError("Required");
-                }if(end.getText().toString().trim().equals("")){
-                    end.setError("Required");
-                }if(fileName.getText().toString().trim().equals("")){
+                if (fileName.getText().toString().trim().equals("")) {
                     fileName.setError("Required");
+                }
+                else if (start.getText().toString().trim().equals("")) {
+                    start.setError("Required");
+                }
+                else if (end.getText().toString().trim().equals("")) {
+                    end.setError("Required");
                 }
                 else {
                 long startroll = Integer.parseInt(start.getText().toString());
@@ -78,7 +80,7 @@ public class AddClassActivity extends AppCompatActivity {
 
                         apkStorage = new File(
                                 Environment.getExternalStorageDirectory() + "/"
-                                        + "AmritaAttendance");
+                                        + "Attendance");
                     } else
                         showSnackbar("Oops!! There is no SD Card.");
                     //If File is not present create directory
@@ -88,7 +90,7 @@ public class AddClassActivity extends AppCompatActivity {
                     }
 
                     File file = new File(Environment.getExternalStorageDirectory() + "/"
-                            + "AmritaAttendance/" + fileName.getText().toString() + ".xlsx");
+                            + "Attendance/" + fileName.getText().toString() + ".xlsx");
 
                     WritableWorkbook myFirstWbook = null;
 

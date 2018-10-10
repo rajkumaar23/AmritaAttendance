@@ -51,7 +51,7 @@ public class TakeAttendance extends AppCompatActivity {
         ArrayList<Student> students=new ArrayList<Student>();
         final StudentAdapter studentsAdapter;
         final File file = new File(Environment.getExternalStorageDirectory() + "/"
-                + "AmritaAttendance/"+filename);
+                + "Attendance/"+filename);
 
 
         Workbook workbook = null;
@@ -89,6 +89,7 @@ public class TakeAttendance extends AppCompatActivity {
                 } else {
                     builder = new AlertDialog.Builder(TakeAttendance.this);
                 }
+                builder.setCancelable(false);
                 builder.setMessage("Attendance is already entried for this date. Please open it as spreadsheet for further editing.")
                         .setPositiveButton("Open", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {

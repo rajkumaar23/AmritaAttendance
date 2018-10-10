@@ -74,7 +74,7 @@ public class LaunchingActivity extends AppCompatActivity
 
 
         final List<String> filenames=new ArrayList<>();
-        File directory = new File(Environment.getExternalStorageDirectory()+"/AmritaAttendance");
+        File directory = new File(Environment.getExternalStorageDirectory()+"/Attendance");
         final File[] files = directory.listFiles();
         if(files!=null){
         for (int i = 0; i < files.length; i++) {
@@ -97,12 +97,13 @@ public class LaunchingActivity extends AppCompatActivity
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                final File pdfFile = new File(Environment.getExternalStorageDirectory() + "/AmritaAttendance/" + files[i].getName());
+                final File pdfFile = new File(Environment.getExternalStorageDirectory() + "/Attendance/" + files[i].getName());
                 if (pdfFile.exists()) {
                     final ArrayList<String> qPaperOptions = new ArrayList<>();
                     qPaperOptions.add("Open as spreadsheet");
                     qPaperOptions.add("Rename");
                     qPaperOptions.add("Delete");
+                    qPaperOptions.add("Share");
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(LaunchingActivity.this); //Read Update
                     ArrayAdapter<String> optionsAdapter = new ArrayAdapter<String>(LaunchingActivity.this, android.R.layout.simple_list_item_1, qPaperOptions);
                     alertDialog.setAdapter(optionsAdapter, new DialogInterface.OnClickListener() {
@@ -146,7 +147,7 @@ public class LaunchingActivity extends AppCompatActivity
                                 alertDialog.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        pdfFile.renameTo(new File(Environment.getExternalStorageDirectory() + "/AmritaAttendance/" + textBox.getText()+".xlsx"));
+                                        pdfFile.renameTo(new File(Environment.getExternalStorageDirectory() + "/Attendance/" + textBox.getText()+".xlsx"));
                                         LaunchingActivity.this.recreate();
                                     }
                                 });
@@ -166,6 +167,15 @@ public class LaunchingActivity extends AppCompatActivity
                                 intent.setDataAndType(data, "application/vnd.ms-excel");
                                 if (intent.resolveActivity(getPackageManager()) != null)
                                     startActivity(Intent.createChooser(intent, "Open the file"));
+                            }else if(pos==3){
+                                Intent sendIntent = new Intent();
+                                sendIntent.setAction(Intent.ACTION_SEND);
+                                Uri data = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", pdfFile);
+                                sendIntent.putExtra(Intent.EXTRA_STREAM,data);
+                                sendIntent.putExtra(Intent.EXTRA_TEXT,
+                                        "" + getResources().getString(R.string.app_name));
+                                sendIntent.setType("application/vnd.ms-excel");
+                                startActivity(sendIntent);
                             }
 
                         }
@@ -244,7 +254,7 @@ public class LaunchingActivity extends AppCompatActivity
 
 
                     List<String> filenames=new ArrayList<>();
-                    File directory = new File(Environment.getExternalStorageDirectory()+"/AmritaAttendance");
+                    File directory = new File(Environment.getExternalStorageDirectory()+"/Attendance");
                     File[] files = directory.listFiles();
                     if(files!=null){
                     for (int i = 0; i < files.length; i++) {

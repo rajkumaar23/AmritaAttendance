@@ -6,6 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
+            android:checked="true"
             android:icon="@drawable/ic_home_black_24dp"
             android:title="Home" />
 
@@ -13,6 +14,11 @@
 
     <item android:title="Tools">
         <menu>
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_action_info"
+                android:title="About" />
+
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
