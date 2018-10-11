@@ -99,10 +99,10 @@ public class TakeAttendance extends AppCompatActivity {
                                 intent.setDataAndType(data, "application/vnd.ms-excel");
                                 if (intent.resolveActivity(getPackageManager()) != null) {
                                     startActivity(Intent.createChooser(intent, "Open the file"));
-                                    TakeAttendance.this.finish();
                                 }
                                 else
                                     showSnackbar("No app found for opening spreadsheets.");
+                                TakeAttendance.this.finish();
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
