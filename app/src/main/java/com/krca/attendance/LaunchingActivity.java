@@ -224,6 +224,16 @@ public class LaunchingActivity extends AppCompatActivity
             // Handle the camera action
             Intent i=new Intent(LaunchingActivity.this,about.class);
             startActivity(i);
+        }else if(id == R.id.nav_share){
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT,
+                    "Download Attendance Easy app here : http://bit.ly/attendanceeasy");
+            sendIntent.setType("text/plain");
+            if(sendIntent.resolveActivity(getPackageManager())!=null)
+            {
+                startActivity(sendIntent);
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
