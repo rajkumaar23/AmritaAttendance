@@ -34,15 +34,20 @@ import jxl.write.WriteException;
 
 public class TakeAttendance extends AppCompatActivity {
 
+    boolean saving=false;
+    Workbook workbook = null;
+    Sheet sheet=null;
     private int currentFreePos;
     int count,flag=1;
+    String date;
+    File file;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take_attendance);
         Bundle b=getIntent().getExtras();
         final String filename=b.getString("filename");
-        final String date=b.getString("date");
+        date=b.getString("date");
 
         TextView textView=findViewById(R.id.attendanceDateTextView);
         textView.setText("Attendance for "+date);
@@ -50,12 +55,11 @@ public class TakeAttendance extends AppCompatActivity {
         final ListView studentsList=findViewById(R.id.studentsList);
         ArrayList<Student> students=new ArrayList<Student>();
         final StudentAdapter studentsAdapter;
-        final File file = new File(Environment.getExternalStorageDirectory() + "/"
+        file = new File(Environment.getExternalStorageDirectory() + "/"
                 + "Attendance/"+filename);
 
 
-        Workbook workbook = null;
-        Sheet sheet=null;
+        
         try {
 
             workbook = Workbook.getWorkbook(file);
@@ -79,6 +83,84 @@ public class TakeAttendance extends AppCompatActivity {
         }
 
 
+       checkRedundancy();
+
+
+        final Button save=findViewById(R.id.saveButton);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ArrayList<String> abs = studentsAdapter.getAbsentees();
+                Workbook workbook = null;
+                WritableWorkbook copy = null;
+                Sheet sheet = null;
+                WritableSheet sheet1 = null;
+                if (!saving) {
+                    try {
+
+                        workbook = Workbook.getWorkbook(file);
+                        copy = Workbook.createWorkbook(file, workbook);
+                        sheet = workbook.getSheet(0);
+                        sheet1 = copy.getSheet(0);
+                        currentFreePos = sheet.getColumns();
+
+                        if (flag > 0) {
+                            sheet1.addCell(new Label(currentFreePos, 0, date));
+
+                            for (int j = 1; j < count; ++j) {
+                                if (!sheet.getCell(0, j).getContents().trim().isEmpty()) {
+                                    if (!abs.contains(String.valueOf(j - 1))) {
+                                        sheet1.addCell(new Label(currentFreePos, j, ""));
+                                        sheet1.addCell(new Label(currentFreePos, j, "Present"));
+                                    } else {
+                                        sheet1.addCell(new Label(currentFreePos, j, ""));
+                                        sheet1.addCell(new Label(currentFreePos, j, "ABSENT"));
+                                    }
+                                }
+
+                            }
+                        }
+                        saving=true;
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (BiffException e) {
+                        e.printStackTrace();
+                    } catch (WriteException e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (workbook != null) {
+                            workbook.close();
+                            try {
+                                copy.write();
+                                copy.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (WriteException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                        showSnackbar("Data entered for " + date);
+
+                    }
+                }
+            }
+
+
+        });
+
+
+    }
+
+    void showSnackbar(String msg){
+        View parentLayout = findViewById(android.R.id.content);
+        Snackbar snackbar = Snackbar
+                .make(parentLayout, msg, Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+    boolean checkRedundancy(){
         for(int k=0;k<currentFreePos;++k)
         {
             if(sheet.getCell(k,0).getContents().equals(date))
@@ -90,7 +172,7 @@ public class TakeAttendance extends AppCompatActivity {
                     builder = new AlertDialog.Builder(TakeAttendance.this);
                 }
                 builder.setCancelable(false);
-                builder.setMessage("Attendance is already entried for this date. Please open it as spreadsheet for further editing.")
+                builder.setMessage("Attendance is already entered for this date. Please open it as spreadsheet for further editing.")
                         .setPositiveButton("Open", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -112,81 +194,9 @@ public class TakeAttendance extends AppCompatActivity {
                         })
                         .show();
 
-                break;
+                return true;
             }
         }
-
-
-
-        Button save=findViewById(R.id.saveButton);
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                ArrayList<String> abs=studentsAdapter.getAbsentees();
-                Workbook workbook = null;
-                WritableWorkbook copy=null;
-                Sheet sheet=null;
-                WritableSheet sheet1=null;
-                        try {
-
-                            workbook = Workbook.getWorkbook(file);
-                            copy= Workbook.createWorkbook(file,workbook);
-                            sheet = workbook.getSheet(0);
-                            sheet1=copy.getSheet(0);
-                            currentFreePos=sheet.getColumns();
-
-                            if(flag>0){
-                            sheet1.addCell(new Label(currentFreePos,0,date));
-
-                            for(int j=1;j<count;++j) {
-                                if(!sheet.getCell(0,j).getContents().trim().isEmpty()) {
-                                    if (!abs.contains(String.valueOf(j - 1))) {
-                                        sheet1.addCell(new Label(currentFreePos, j, ""));
-                                        sheet1.addCell(new Label(currentFreePos, j, "Present"));
-                                    } else {
-                                        sheet1.addCell(new Label(currentFreePos, j, ""));
-                                        sheet1.addCell(new Label(currentFreePos, j, "ABSENT"));
-                                    }
-                                }
-
-                            }}
-
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (BiffException e) {
-                            e.printStackTrace();
-                        } catch (WriteException e) {
-                            e.printStackTrace();
-                        } finally {
-                            if (workbook != null) {
-                                workbook.close();
-                                try {
-                                    copy.write();
-                                    copy.close();
-                                }catch (IOException e) {
-                                    e.printStackTrace();
-                                }catch (WriteException e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-                            showSnackbar("Data entried for "+date);
-
-                        }
-                    }
-
-
-        });
-
-
-    }
-
-    void showSnackbar(String msg){
-        View parentLayout = findViewById(android.R.id.content);
-        Snackbar snackbar = Snackbar
-                .make(parentLayout, msg, Snackbar.LENGTH_SHORT);
-        snackbar.show();
+return false;
     }
 }
